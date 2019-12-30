@@ -1,0 +1,17 @@
+
+POST client:@localhost:8080/oauth/token
+Content-Type: application/x-www-form-urlencoded
+
+grant_type=password&scope=*&username=user1@mail.com&password=123456
+
+> {%
+  var accessToken = response.body.access_token;
+  client.global.set("accessToken", accessToken);
+%}
+
+###
+
+GET localhost:8080/users/me
+Authorization: bearer {{accessToken}}
+
+###

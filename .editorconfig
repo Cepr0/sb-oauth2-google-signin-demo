@@ -1,0 +1,5 @@
+[{*.java,*.html,*.js}]
+indent_size = 3
+
+[{.css,*.yml,*.xml,*.kt}]
+indent_size = 2
