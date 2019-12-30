@@ -2,6 +2,8 @@ package io.github.cepr0.demo.user;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
@@ -10,6 +12,8 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = "email")
 @Entity
 @Table(name = "users")
+@DynamicInsert
+@DynamicUpdate
 public class User {
 
 	@Id
@@ -28,6 +32,7 @@ public class User {
 
 	private String password;
 
+	@Column(columnDefinition = "varchar(255) default ''")
 	private String avatarUrl;
 
 	@Column(length = 64)
