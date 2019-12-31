@@ -18,7 +18,7 @@ public class User {
 
 	@Id
 	@GeneratedValue
-	private Long id;
+	private Integer id;
 
 	@Version
 	private Short version;

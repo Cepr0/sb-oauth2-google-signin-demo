@@ -8,7 +8,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.oauth2.common.DefaultOAuth2AccessToken;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
@@ -24,7 +23,6 @@ import static java.util.Optional.ofNullable;
 
 @Configuration
 @EnableConfigurationProperties(AuthProps.class)
-@EnableResourceServer
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
 	private final AuthenticationManager authenticationManager;
@@ -51,8 +49,9 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 		TokenEnhancerChain chain = new TokenEnhancerChain();
 		chain.setTokenEnhancers(List.of(
 				(accessToken, authentication) -> {
-					if (authentication != null && authentication.getPrincipal() instanceof AuthUser) {
-						AuthUser authUser = (AuthUser) authentication.getPrincipal();
+					if (authentication != null && authentication.getPrincipal() instanceof CustomUserDetails) {
+						CustomUserDetails customUserDetails = (CustomUserDetails) authentication.getPrincipal();
+						AuthUser authUser = customUserDetails.getAuthUser();
 						Map<String, Object> additionalInfo = Map.of(
 								"user_id", authUser.getId(),
 								"user_name", authUser.getName(),
@@ -81,7 +80,13 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 			@Override
 			public OAuth2Authentication extractAuthentication(Map<String, ?> claims) {
 				OAuth2Authentication authentication = super.extractAuthentication(claims);
-				authentication.setDetails(claims);
+				AuthUser authUser = new AuthUser(
+						(Integer) claims.get("user_id"),
+						(String) claims.get("user_name"),
+						(String) claims.get("user_email"),
+						(String) claims.get("user_avatar")
+				);
+				authentication.setDetails(authUser);
 				return authentication;
 			}
 		});

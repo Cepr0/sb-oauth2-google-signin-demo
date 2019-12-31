@@ -1,30 +1,34 @@
 package io.github.cepr0.demo.user;
 
+import io.github.cepr0.demo.security.AuthUser;
+import io.github.cepr0.demo.user.dto.SignUpRequest;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import javax.validation.Valid;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/users")
 public class UserController {
 
+	private final UserService userService;
+
+	public UserController(UserService userService) {
+		this.userService = userService;
+	}
+
 	@GetMapping("/me")
-	public Map<String, ?> demo(OAuth2Authentication auth) {
-
+	public AuthUser demo(OAuth2Authentication auth) {
 		var details = (OAuth2AuthenticationDetails) auth.getDetails();
-		//noinspection unchecked
-		var decodedDetails = (Map<String, Object>) details.getDecodedDetails();
+		return (AuthUser) details.getDecodedDetails();
+	}
 
-		return Map.of(
-				"id", decodedDetails.get("user_id"),
-				"name", decodedDetails.get("user_name"),
-				"email", decodedDetails.get("user_email"),
-				"avatar", decodedDetails.get("user_avatar"),
-				"roles", decodedDetails.get("authorities")
-		);
+	@PostMapping("/me/signup")
+	public ResponseEntity<?> signup(@Valid @RequestBody SignUpRequest request) {
+		int userId = userService.create(request);
+		return ResponseEntity.created(URI.create("/users/" + userId)).build();
 	}
 }
