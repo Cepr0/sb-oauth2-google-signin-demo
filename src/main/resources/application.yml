@@ -25,6 +25,8 @@ log4jdbc:
 demo:
   auth:
     signing-key: 123456
+  google:
+    client-id: 165605455122-3ng8bglg5rbsnjb0di51gckne5nhr84b.apps.googleusercontent.com
 
 spring:
   jpa:

@@ -97,7 +97,7 @@
 						<p id="profile-user-id" class="card-text"></p>
 						<p id="profile-user-email" class="card-text"></p>
 
-						<a href="#" class="btn btn-primary">Sign out</a>
+						<a id="sign-out" href="#" class="btn btn-primary">Sign out</a>
 						<div id="error-profile" class="mt-2 small"></div>
 					</div>
 				</div>
@@ -115,6 +115,7 @@
 <script>
 	const HOST = 'http://localhost:8080';
 	const CLIENT_SECRET = 'client:';
+	const CLIENT_ID = 'client';
 
 	let tokenStore = null;
 
@@ -147,21 +148,9 @@
 			}
 		});
 
-		$("#google-signup").click(() => {
-			gapi.auth2.getAuthInstance().signIn({
-				prompt: 'select_account'
-			}).then(googleUser => {
-				let profile = googleUser.getBasicProfile();
-				console.log("ID: " + profile.getId());
-				console.log('Full Name: ' + profile.getName());
-				console.log('Given Name: ' + profile.getGivenName());
-				console.log('Family Name: ' + profile.getFamilyName());
-				console.log("Image URL: " + profile.getImageUrl());
-				console.log("Email: " + profile.getEmail());
-
-				let id_token = googleUser.getAuthResponse().id_token;
-				console.log("ID Token: " + id_token);
-			});
+		$("#google-signup").click(async () => {
+			let $error = $("#error-signup");
+			await googleToToken($error);
 		});
 
 		$("#signin-form").submit(async (event) => {
@@ -171,6 +160,11 @@
 					$("#password-signin").val(),
 					$("#error-signin")
 			);
+		});
+
+		$("#google-signin").click(async () => {
+			let $error = $("#error-signin");
+			await googleToToken($error);
 		});
 
 		$("#nav-profile-tab").on('show.bs.tab', async event => {
@@ -189,14 +183,35 @@
 					} else {
 						$('#profile-user-avatar').hide();
 					}
-					$('#profile-user-name').html(profile.name);
-					$('#profile-user-id').html('ID: ' + profile.id);
-					$('#profile-user-email').html('Email: ' + profile.email);
+					$('#profile-user-name').html(profile.name).show();
+					$('#profile-user-id').html('ID: ' + profile.id).show();
+					$('#profile-user-email').html('Email: ' + profile.email).show();
+
+					$("#nav-signup-tab").addClass('disabled');
+					$("#nav-signin-tab").addClass('disabled');
+
 				} else {
 					await showError(response, $('error-profile'));
 				}
+			} else {
+				$('#profile-user-avatar').hide();
+				$('#profile-user-name').hide();
+				$('#profile-user-id').hide();
+				$('#profile-user-email').hide();
 			}
-		})
+		});
+
+		$("#sign-out").click(() => {
+
+			tokenStore = null;
+
+			let $signupTab = $("#nav-signup-tab");
+
+			$signupTab.removeClass('disabled');
+			$("#nav-signin-tab").removeClass('disabled');
+
+			$signupTab.tab('show');
+		});
 	};
 
 	async function getTokenAndProfile(username, password, $info) {
@@ -226,6 +241,33 @@
 		}
 	}
 
+	async function googleToToken($place) {
+		let googleUser = await gapi.auth2.getAuthInstance().signIn({
+			prompt: 'select_account'
+		});
+		let googleToken = googleUser.getAuthResponse().id_token;
+
+		let response = await fetch(HOST + "/users/me/google", {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json;charset=utf-8'
+			},
+			body: JSON.stringify({
+				googleToken: googleToken,
+				clientId: CLIENT_ID,
+			})
+		});
+
+		if (response.ok) {
+			let json = await response.json();
+			tokenStore = json.token;
+			showInfo('User ID', json.userId, $place);
+			$("#nav-profile-tab").tab('show');
+		} else {
+			await showError(response, $place);
+		}
+	}
+
 	function showInfo(title, text, $place) {
 		$place.text(title + ": " + text).removeClass("text-danger").addClass("text-info").show().fadeOut(3000);
 	}
@@ -235,12 +277,6 @@
 		let message = json.message;
 		let error = json.error;
 		$place.text(error + ": " + message).removeClass("text-info").addClass("text-danger").show().fadeOut(3000);
-	}
-
-	async function sleep(miliseconds) {
-		let currentTime = new Date().getTime();
-		while (currentTime + miliseconds >= new Date().getTime()) {
-		}
 	}
 </script>
 
