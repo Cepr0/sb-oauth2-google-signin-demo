@@ -12,7 +12,7 @@
 	<artifactId>sb-oauth2-google-signin-demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>sb-oauth2-google-signin-demo</name>
-	<description>Demo project for Spring Boot</description>
+	<description>Combination of local OAuth2 authentication and Google Sign-in in Spring Boot application</description>
 
 	<properties>
 		<java.version>11</java.version>
