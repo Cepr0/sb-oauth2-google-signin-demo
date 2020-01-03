@@ -75,6 +75,10 @@ public class UserServiceImpl implements UserService {
 		GoogleData googleData = google.getData(googleToken);
 
 		User user = userRepo.findByEmail(googleData.getEmail())
+				.map(target -> target
+						.setGoogleId(googleData.getGoogleId())
+						.setAvatarUrl(googleData.getAvatarUrl())
+				)
 				.orElseGet(() -> userRepo.save(new User()
 						.setName(googleData.getName())
 						.setEmail(googleData.getEmail())

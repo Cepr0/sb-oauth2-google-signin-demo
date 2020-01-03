@@ -143,6 +143,12 @@
 			if (response.ok) {
 				let location = response.headers.get('Location');
 				showInfo('Location', location, $error);
+
+				await getTokenAndProfile(
+						$("#email-signup").val(),
+						$("#password-signup").val(),
+						$error
+				);
 			} else {
 				await showError(response, $error);
 			}
@@ -204,6 +210,8 @@
 		$("#sign-out").click(() => {
 
 			tokenStore = null;
+			$(':input', "#signup-form").val('');
+			$(':input', "#signin-form").val('');
 
 			let $signupTab = $("#nav-signup-tab");
 
