@@ -3,6 +3,7 @@ package io.github.cepr0.demo.user;
 import io.github.cepr0.demo.google.GoogleData;
 import io.github.cepr0.demo.google.GoogleDataProvider;
 import io.github.cepr0.demo.security.CustomUserDetails;
+import io.github.cepr0.demo.security.OAuth2AccessTokenGenerator;
 import io.github.cepr0.demo.user.dto.GoogleRequest;
 import io.github.cepr0.demo.user.dto.SignUpRequest;
 import io.github.cepr0.demo.user.dto.TokenDto;
@@ -10,48 +11,33 @@ import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerEndpointsConfiguration;
-import org.springframework.security.oauth2.provider.*;
-import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
+import org.springframework.security.oauth2.provider.ClientRegistrationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.Map;
-
-import static java.util.Collections.singletonList;
 
 @Slf4j
 @Transactional
 @Service
 public class UserServiceImpl implements UserService {
 
-	private static final String PASSWORD_GRANT_TYPE = "password";
-	private static final String SCOPE = "*";
-
 	private final UserRepo userRepo;
 	private final PasswordEncoder passwordEncoder;
 	private final GoogleDataProvider google;
-	private final ClientDetailsService clientDetailsService;
-	private final AuthorizationServerTokenServices tokenServices;
+	private final OAuth2AccessTokenGenerator tokenGenerator;
 
 	public UserServiceImpl(
 			UserRepo userRepo,
 			PasswordEncoder passwordEncoder,
 			GoogleDataProvider google,
-			ClientDetailsService clientDetailsService,
-			AuthorizationServerEndpointsConfiguration endpoints
+			OAuth2AccessTokenGenerator tokenGenerator
 	) {
 		this.userRepo = userRepo;
 		this.passwordEncoder = passwordEncoder;
 		this.google = google;
-		this.clientDetailsService = clientDetailsService;
-
-		var configurer = endpoints.getEndpointsConfigurer();
-		this.tokenServices = configurer.getTokenServices();
+		this.tokenGenerator = tokenGenerator;
 	}
 
 	@Override
@@ -75,21 +61,18 @@ public class UserServiceImpl implements UserService {
 		GoogleData googleData = google.getData(googleToken);
 
 		User user = userRepo.findByEmail(googleData.getEmail())
+				// update an existing user with google Id and avatar URL
 				.map(target -> target
 						.setGoogleId(googleData.getGoogleId())
 						.setAvatarUrl(googleData.getAvatarUrl())
 				)
+				// or create a new one
 				.orElseGet(() -> userRepo.save(new User()
 						.setName(googleData.getName())
 						.setEmail(googleData.getEmail())
 						.setGoogleId(googleData.getGoogleId())
 						.setAvatarUrl(googleData.getAvatarUrl())
 				));
-
-		return getAccessToken(user, clientId);
-	}
-
-	private TokenDto getAccessToken(User user, String clientId) {
 
 		UserDetails userDetails = new CustomUserDetails(
 				user.getId(),
@@ -99,24 +82,12 @@ public class UserServiceImpl implements UserService {
 				""
 		);
 
-		ClientDetails client;
 		try {
-			client = clientDetailsService.loadClientByClientId(clientId);
+			return new TokenDto(user.getId(), tokenGenerator.generate(userDetails, clientId));
 		} catch (ClientRegistrationException e) {
-			log.error("[!] Couldn't find a client data by clientId '{}", clientId);
-			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Provided client id is incorrect");
+			String message = "Client with provided id is not found or incorrect";
+			log.error("[!] {}: '{}'", message, clientId);
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, message);
 		}
-
-		var authToken = new UsernamePasswordAuthenticationToken(userDetails, userDetails, userDetails.getAuthorities());
-
-		Map<String, String> params = Map.of(
-				"grant_type", PASSWORD_GRANT_TYPE,
-				"scope", SCOPE
-		);
-
-		var tokenRequest = new TokenRequest(params, clientId, singletonList(SCOPE), PASSWORD_GRANT_TYPE);
-		var oAuth = new OAuth2Authentication(tokenRequest.createOAuth2Request(client), authToken);
-		var accessToken = tokenServices.createAccessToken(oAuth);
-		return new TokenDto(user.getId(), accessToken);
 	}
 }

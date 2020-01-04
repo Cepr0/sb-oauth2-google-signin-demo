@@ -34,12 +34,12 @@
 
 						<div class="form-group">
 							<label for="full-name">Full Name</label>
-							<input type="text" class="form-control" id="full-name" placeholder="John Smith">
+							<input type="text" class="form-control" id="full-name">
 						</div>
 
 						<div class="form-group">
 							<label for="email-signup">Email</label>
-							<input type="email" class="form-control" id="email-signup" placeholder="jsmith@example.com">
+							<input type="email" class="form-control" id="email-signup">
 						</div>
 
 						<div class="form-group">
@@ -67,7 +67,7 @@
 
 						<div class="form-group">
 							<label for="email-signup">Email</label>
-							<input type="email" class="form-control" id="email-signin" name="username" placeholder="jsmith@example.com">
+							<input type="email" class="form-control" id="email-signin" name="username">
 						</div>
 
 						<div class="form-group">
@@ -114,8 +114,7 @@
 
 <script>
 	const HOST = 'http://localhost:8080';
-	const CLIENT_SECRET = 'client:';
-	const CLIENT_ID = 'client';
+	const CLIENT_ID = 'web-client';
 
 	let tokenStore = null;
 
@@ -231,7 +230,7 @@
 		];
 
 		let headers = new Headers();
-		headers.append('Authorization', 'Basic ' + btoa(CLIENT_SECRET));
+		headers.append('Authorization', 'Basic ' + btoa(CLIENT_ID + ":"));
 		headers.append('Content-Type', 'application/x-www-form-urlencoded;charset=UTF-8');
 		let response = await fetch(HOST + "/oauth/token", {
 			method: 'POST',

@@ -25,6 +25,9 @@ import static java.util.Optional.ofNullable;
 @EnableConfigurationProperties(AuthProps.class)
 public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 
+	private static final String CLIENT_ID = "web-client";
+	private static final String CLIENT_SECRET = "{noop}"; // we don't use the password for our public client
+
 	private final AuthenticationManager authenticationManager;
 	private final AuthProps props;
 
@@ -36,8 +39,8 @@ public class AuthServerConfig extends AuthorizationServerConfigurerAdapter {
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clientDetailsService) throws Exception {
 		clientDetailsService.inMemory()
-				.withClient("client")
-				.secret("{noop}") // don't use the password for our public client
+				.withClient(CLIENT_ID)
+				.secret(CLIENT_SECRET)
 				.scopes("*")
 				.authorizedGrantTypes("password", "refresh_token")
 				.accessTokenValiditySeconds((int) props.getAccessTokenValidity().getSeconds())
