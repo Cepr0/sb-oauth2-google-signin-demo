@@ -40,11 +40,11 @@ public class User {
 	private String googleId;
 
 	@Enumerated(EnumType.STRING)
-	@Column(length = 5, nullable = false)
-	private Role role = Role.USER;
+	@Column(length = 10, nullable = false)
+	private Role role = Role.ROLE_USER;
 
 	public enum Role implements GrantedAuthority {
-		USER, ADMIN;
+		ROLE_USER, ROLE_ADMIN;
 
 		@Override
 		public String getAuthority() {

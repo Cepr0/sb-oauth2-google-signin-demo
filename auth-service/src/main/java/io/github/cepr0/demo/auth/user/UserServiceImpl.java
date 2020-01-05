@@ -42,12 +42,18 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public int create(@NonNull SignUpRequest request) {
+		User user = new User()
+				.setName(request.getName())
+				.setEmail(request.getEmail())
+				.setPassword(passwordEncoder.encode(request.getPassword()));
+
+		User.Role role = request.getRole();
+		if (role != null) {
+			user.setRole(role);
+		}
+
 		try {
-			return userRepo.saveAndFlush(new User()
-					.setName(request.getName())
-					.setEmail(request.getEmail())
-					.setPassword(passwordEncoder.encode(request.getPassword()))
-			).getId();
+			return userRepo.saveAndFlush(user).getId();
 		} catch (DataIntegrityViolationException e) {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Such email is already exists");
 		}

@@ -21,7 +21,7 @@ public class DemoData {
 			new User().setName("User1").setEmail("user1@mail.com").setPassword("{noop}123456"),
 			new User().setName("User2").setEmail("user2@mail.com").setPassword("{noop}123456"),
 			new User().setName("User3").setEmail("user3@mail.com").setPassword("{noop}123456"),
-			new User().setName("Admin").setEmail("admin@mail.com").setPassword("{noop}123456").setRole(User.Role.ADMIN)
+			new User().setName("Admin").setEmail("admin@mail.com").setPassword("{noop}123456").setRole(User.Role.ROLE_ADMIN)
 		));
 	}
 }
