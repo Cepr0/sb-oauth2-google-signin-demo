@@ -68,6 +68,9 @@ public class UserServiceImpl implements UserService {
 
 		GoogleData googleData = google.getData(googleToken);
 
+		// TODO Handle a situation when googleData.emailVerified is false
+		// TODO Won't forget to use googleData.locale
+
 		User user = userRepo.findByEmail(googleData.getEmail())
 				// update an existing user with google Id and avatar URL
 				.map(target -> target

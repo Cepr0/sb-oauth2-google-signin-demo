@@ -14,7 +14,7 @@ import java.sql.SQLException;
 @EnableResourceServer
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @SpringBootApplication(
-		exclude = UserDetailsServiceAutoConfiguration.class,
+		exclude = UserDetailsServiceAutoConfiguration.class, // to disable basic security
 		scanBasePackages = {
 				"io.github.cepr0.demo.resource",
 				"io.github.cepr0.demo.common"

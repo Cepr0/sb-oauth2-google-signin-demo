@@ -11,6 +11,9 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import java.util.Map;
 
+/**
+ * Registers two beans - 'tokenConverter' and 'tokenStore' which are used both in Auth and Resource servers
+ */
 @Configuration
 @EnableConfigurationProperties(TokenProps.class)
 public class TokenConfig {
