@@ -8,9 +8,13 @@
 		<groupId>io.github.cepr0</groupId>
 		<artifactId>sb-oauth2-google-signin-demo-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
 
-	<artifactId>web-app</artifactId>
+	<artifactId>sb-oauth2-google-signin-demo-web-app</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>web-app</name>
 	<description>A simple web application a-la SPA</description>
 
 	<dependencies>

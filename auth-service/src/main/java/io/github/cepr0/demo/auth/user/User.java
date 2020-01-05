@@ -5,6 +5,7 @@ import lombok.EqualsAndHashCode;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.NaturalId;
+import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
 
@@ -37,4 +38,17 @@ public class User {
 
 	@Column(length = 64)
 	private String googleId;
+
+	@Enumerated(EnumType.STRING)
+	@Column(length = 5, nullable = false)
+	private Role role = Role.USER;
+
+	public enum Role implements GrantedAuthority {
+		USER, ADMIN;
+
+		@Override
+		public String getAuthority() {
+			return this.name();
+		}
+	}
 }

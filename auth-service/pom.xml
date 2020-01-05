@@ -8,15 +8,19 @@
 		<groupId>io.github.cepr0</groupId>
 		<artifactId>sb-oauth2-google-signin-demo-parent</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
 
-	<artifactId>auth-service</artifactId>
+	<artifactId>sb-oauth2-google-signin-demo-auth-service</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>auth-service</name>
 	<description>User authentication service</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>io.github.cepr0</groupId>
-			<artifactId>common</artifactId>
+			<artifactId>sb-oauth2-google-signin-demo-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.google.api-client</groupId>

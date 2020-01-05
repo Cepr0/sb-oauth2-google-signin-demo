@@ -74,13 +74,7 @@ public class UserServiceImpl implements UserService {
 						.setAvatarUrl(googleData.getAvatarUrl())
 				));
 
-		UserDetails userDetails = new CustomUserDetails(
-				user.getId(),
-				user.getName(),
-				user.getEmail(),
-				user.getAvatarUrl(),
-				""
-		);
+		UserDetails userDetails = new CustomUserDetails(user);
 
 		try {
 			return new TokenDto(user.getId(), tokenGenerator.generate(userDetails, clientId));

@@ -32,14 +32,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Override
 	public UserDetailsService userDetailsService() {
 		return email -> userRepo.findByEmail(email)
-				.map(customer -> new CustomUserDetails(
-								customer.getId(),
-								customer.getName(),
-								customer.getEmail(),
-								customer.getAvatarUrl(),
-								customer.getPassword()
-						)
-				).orElseThrow(() -> new UsernameNotFoundException("User with the given email not found!"));
+				.map(CustomUserDetails::new)
+				.orElseThrow(() -> new UsernameNotFoundException("User with the given email not found!"));
 	}
 
 	@Bean

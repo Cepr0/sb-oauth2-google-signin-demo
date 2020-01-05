@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.github.cepr0</groupId>
-	<artifactId>sb-oauth2-google-signin-demo-main</artifactId>
+	<artifactId>sb-oauth2-google-signin-demo</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 

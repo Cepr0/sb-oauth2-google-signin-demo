@@ -8,9 +8,13 @@
 		<artifactId>sb-oauth2-google-signin-demo-parent</artifactId>
 		<groupId>io.github.cepr0</groupId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
 
-	<artifactId>common</artifactId>
+	<artifactId>sb-oauth2-google-signin-demo-common</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>common</name>
 	<description>Common stuff for authentication and resource services</description>
 
 	<dependencies>

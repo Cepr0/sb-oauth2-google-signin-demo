@@ -8,15 +8,19 @@
 		<artifactId>sb-oauth2-google-signin-demo-parent</artifactId>
 		<groupId>io.github.cepr0</groupId>
 		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../parent</relativePath>
 	</parent>
 
-	<artifactId>resource-service</artifactId>
+	<artifactId>sb-oauth2-google-signin-demo-resource-service</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+
+	<name>resource-service</name>
 	<description>Resource service</description>
 
 	<dependencies>
 		<dependency>
 			<groupId>io.github.cepr0</groupId>
-			<artifactId>common</artifactId>
+			<artifactId>sb-oauth2-google-signin-demo-common</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>

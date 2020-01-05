@@ -1,18 +1,17 @@
 package io.github.cepr0.demo.auth.security;
 
+import io.github.cepr0.demo.auth.user.User;
 import io.github.cepr0.demo.common.AuthUser;
 import lombok.Getter;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 
 import java.util.List;
 
 @Getter
-public class CustomUserDetails extends User {
+public class CustomUserDetails extends org.springframework.security.core.userdetails.User {
 	private final AuthUser authUser;
 
-	public CustomUserDetails(long id, String name, String email, String avatarUrl, String password) {
-		super(email, password, List.of(new SimpleGrantedAuthority("USER")));
-		this.authUser = new AuthUser(id, name, email, avatarUrl);
+	public CustomUserDetails(User user) {
+		super(user.getEmail(), user.getPassword(), List.of(user.getRole()));
+		this.authUser = new AuthUser(user.getId(), user.getName(), user.getEmail(), user.getAvatarUrl());
 	}
 }
