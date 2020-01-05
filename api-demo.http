@@ -1,5 +1,6 @@
-
-POST web-client:@localhost:8080/oauth/token
+# Get Acces token for user 'user1@mail.com'
+#
+POST web-client:@localhost:8081/oauth/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=password&scope=*&username=user1@mail.com&password=123456
@@ -11,23 +12,45 @@ grant_type=password&scope=*&username=user1@mail.com&password=123456
 
 ###
 
-GET localhost:8080/users/me
+# Get Profile of user 'user1@mail.com'
+#
+GET localhost:8081/users/me
 Authorization: bearer {{accessToken}}
 
 ###
 
-POST localhost:8080/users/me/signup
+# Get Resource #1 by user 'user1@mail.com'
+#
+GET localhost:8082/resources/1
+Authorization: bearer {{accessToken}}
+
+###
+
+# Get a list of all Resources by user 'user1@mail.com'
+# - Access denied
+#
+GET localhost:8082/resources
+Authorization: bearer {{accessToken}}
+
+###
+
+# Sign up a new Admin user
+#
+POST localhost:8081/users/me/signup
 Content-Type: application/json
 
 {
   "name": "John Smith",
   "email": "jsmith@mail.com",
-  "password": "123456"
+  "password": "123456",
+  "role": "ROLE_ADMIN"
 }
 
 ###
 
-POST web-client:@localhost:8080/oauth/token
+# Get Acces token for Admin user
+#
+POST web-client:@localhost:8081/oauth/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=password&scope=*&username=jsmith@mail.com&password=123456
@@ -36,6 +59,21 @@ grant_type=password&scope=*&username=jsmith@mail.com&password=123456
   var accessToken = response.body.access_token;
   client.global.set("accessToken", accessToken);
 %}
+
+###
+
+# Get Resource #2 by Admin user
+#
+GET localhost:8082/resources/2
+Authorization: bearer {{accessToken}}
+
+###
+
+# Get a list of all Resources by Admin user
+# - Success
+#
+GET localhost:8082/resources
+Authorization: bearer {{accessToken}}
 
 ###
 
