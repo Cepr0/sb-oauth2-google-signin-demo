@@ -63,7 +63,7 @@
 
 				<!-- Sign-In -->
 				<div id="signin-tab" class="card tab-pane fade border-top-0" role="tabpanel" aria-labelledby="nav-signin-tab">
-					<form id="signin-form" class="p-3 ">
+					<form id="signin-form" class="p-3">
 
 						<div class="form-group">
 							<label for="email-signup">Email</label>
@@ -104,7 +104,14 @@
 
 				<!-- Resource -->
 				<div id="resource-tab" class="card tab-pane fade border-top-0" role="tabpanel" aria-labelledby="nav-resource-tab">
-					Resource
+					<form id="resource-form" class="p-3">
+						<div class="form-group">
+							<label for="resource-id">Resource ID</label>
+							<input type="number" class="form-control" id="resource-id" name="resource-id" value="1">
+						</div>
+						<button type="submit" class="btn btn-primary">Request</button>
+						<div id="result-resource" class="mt-2 small"></div>
+					</form>
 				</div>
 			</div>
 		</div>
@@ -197,7 +204,7 @@
 					$("#nav-signin-tab").addClass('disabled');
 
 				} else {
-					await showError(response, $('error-profile'));
+					await showError(response, $('#error-profile'));
 				}
 			} else {
 				$('#profile-user-avatar').hide();
@@ -219,6 +226,27 @@
 			$("#nav-signin-tab").removeClass('disabled');
 
 			$signupTab.tab('show');
+		});
+
+		$("#resource-form").submit(async (event) => {
+			event.preventDefault();
+			let resourceId = $("#resource-id").val();
+			let headers = new Headers();
+			if (tokenStore != null) {
+				headers.append('Authorization', 'Bearer ' + tokenStore.access_token);
+			}
+			let response = await fetch(RESOURCE_SERVICE + "/resources/" + (resourceId === '' ? 0 : resourceId), {
+				method: 'GET',
+				headers: headers
+			});
+
+			let $resultPlace = $('#result-resource');
+			if (response.ok) {
+				let resource = await response.json();
+				showInfo('Resource', JSON.stringify(resource, null, 2), $resultPlace);
+			} else {
+				await showError(response, $resultPlace);
+			}
 		});
 	};
 
@@ -277,14 +305,19 @@
 	}
 
 	function showInfo(title, text, $place) {
-		$place.text(title + ": " + text).removeClass("text-danger").addClass("text-info").show().fadeOut(3000);
+		$place.html(title + ": " + text).removeClass("text-danger").addClass("text-info").show().fadeOut(5000);
 	}
 
 	async function showError(response, $place) {
-		let json = await response.json();
-		let message = json.message;
-		let error = json.error;
-		$place.text(error + ": " + message).removeClass("text-info").addClass("text-danger").show().fadeOut(3000);
+		let json = {};
+		let error = 'Error';
+		let message = 'Not found';
+		if (response.headers.get('content-type')) {
+			json = await response.json();
+			error = json.error;
+			message = json.message || json.error_description;
+		}
+		$place.html(error + ": " + message).removeClass("text-info").addClass("text-danger").show().fadeOut(5000);
 	}
 </script>
 
