@@ -18,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.UUID;
+
 @Slf4j
 @Transactional
 @Service
@@ -76,6 +78,7 @@ public class UserServiceImpl implements UserService {
 				.orElseGet(() -> userRepo.save(new User()
 						.setName(googleData.getName())
 						.setEmail(googleData.getEmail())
+						.setPassword(passwordEncoder.encode(UUID.randomUUID().toString()))
 						.setGoogleId(googleData.getGoogleId())
 						.setAvatarUrl(googleData.getAvatarUrl())
 				));
