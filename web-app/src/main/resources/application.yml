@@ -1,0 +1,8 @@
+logging:
+  level:
+    io.github.cepr0: debug
+    org:
+      springframework:
+        web: debug
+server:
+  port: 8080

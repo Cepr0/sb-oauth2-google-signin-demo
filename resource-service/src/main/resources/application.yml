@@ -1,0 +1,45 @@
+demo:
+  token:
+    signing-key: 123456
+
+logging:
+  level:
+    io.github.cepr0: debug
+    org:
+      springframework:
+        data: debug
+        orm.jpa: debug
+        security: debug
+        web: debug
+
+    jdbc:
+      sqltiming: info
+      resultsettable: info
+      sqlonly: fatal
+      audit: fatal
+      resultset: fatal
+      connection: fatal
+
+log4jdbc:
+  dump.sql:
+    addsemicolon: true
+    maxlinelength: 0
+  trim.sql.extrablanklines: false
+
+server:
+  port: 8082
+
+spring:
+  jpa:
+    open-in-view: false
+    properties:
+      hibernate:
+        order_inserts: true
+        order_updates: true
+        jdbc:
+          lob.non_contextual_creation: true
+          batch_size: 20
+          fetch_size: 20
+          batch_versioned_data: true
+    hibernate:
+      ddl-auto: create
