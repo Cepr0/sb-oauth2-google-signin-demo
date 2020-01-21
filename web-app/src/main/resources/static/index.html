@@ -91,7 +91,7 @@
 
 				<!-- Profile -->
 				<div id="profile-tab" class="card tab-pane fade border-top-0" role="tabpanel" aria-labelledby="nav-profile-tab">
-					<img id="profile-user-avatar" src="#" class="card-img-top" alt="">
+					<img id="profile-user-avatar" src="#" class="card-img-top" alt="User avatar">
 					<div class="card-body">
 						<h5 id="profile-user-name" class="card-title"></h5>
 						<p id="profile-user-id" class="card-text"></p>
@@ -192,7 +192,9 @@
 				if (response.ok) {
 					let profile = await response.json();
 					if (profile.avatarUrl != null && profile.avatarUrl.length > 0) {
-						$('#profile-user-avatar').attr('src', profile.avatarUrl).show();
+						$('#profile-user-avatar').attr({
+							src: profile.avatarUrl
+						}).show();
 					} else {
 						$('#profile-user-avatar').hide();
 					}
