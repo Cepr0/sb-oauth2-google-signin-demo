@@ -11,7 +11,7 @@ and your JWT token was generated for them as well.
 ## Used stack
 
 - Spring Boot 2.2.x
-- [Spring Security OAuth Boot 2 Autoconfig][3]
+- [Spring Security OAuth Boot 2 Autoconfig 2.2.x][3]
 - Spring Web MVC
 - Google API Client
 - H2 Database
@@ -29,9 +29,9 @@ and your JWT token was generated for them as well.
 - [Integrating Google Sign-In into your web app][5]
 - [OAuth 2 Developers Guide][6]
 
-[1]: https://docs.spring.io/spring-security-oauth2-boot/docs/current/reference/htmlsingle/#boot-features-security-oauth2-authorization-server
+[1]: https://docs.spring.io/spring-security-oauth2-boot/docs/2.2.x/reference/htmlsingle/#boot-features-security-oauth2-authorization-server
 [2]: https://developers.google.com/identity/sign-in/web
-[3]: https://github.com/spring-projects/spring-security-oauth2-boot
-[4]: https://docs.spring.io/spring-security-oauth2-boot/docs/current/reference/htmlsingle
+[3]: https://github.com/spring-projects/spring-security-oauth2-boot/tree/2.2.x
+[4]: https://docs.spring.io/spring-security-oauth2-boot/docs/2.2.x/reference/htmlsingle/
 [5]: https://developers.google.com/identity/sign-in/web/sign-in
 [6]: https://projects.spring.io/spring-security-oauth/docs/oauth2.html
